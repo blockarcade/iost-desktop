@@ -11,6 +11,7 @@ const domContainer = document.querySelector('#root');
 
 const addNewAccount = account => ipcRenderer.send('newAccount', account);
 const updateSelectedAccount = account => ipcRenderer.send('updateSelectedAccount', account);
+const updateDisplay = display => ipcRenderer.send('updateDisplay', display);
 
 const render = () => ReactDOM.render(
   e(
@@ -18,15 +19,16 @@ const render = () => ReactDOM.render(
     {
       addNewAccount,
       updateSelectedAccount,
+      updateDisplay,
       accounts: win.accounts,
       selectedAccount: win.selectedAccount,
+      display: win.display,
     },
   ),
   domContainer,
 );
 
 // Re-render when we get a new account.
-ipcRenderer.on('newAccount', render);
-ipcRenderer.on('updateSelectedAccount', render);
+ipcRenderer.on('reRender', render);
 
 render();

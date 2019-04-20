@@ -3,6 +3,28 @@ const { default: Select } = require('react-select');
 
 const e = React.createElement;
 
+
+const selectStyle = {
+  option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    return {
+      ...styles,
+      color: 'black',
+    };
+  },
+};
+
+// TODO Pull these from the backend.
+const displayOptions = [
+  {
+    value: 'ACCOUNT_BALANCE',
+    label: 'Account Balance',
+  },
+  {
+    value: 'IOST_PRICE',
+    label: 'IOST Price',
+  },
+];
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -15,6 +37,8 @@ class App extends React.Component {
       addNewAccount,
       selectedAccount,
       updateSelectedAccount,
+      display,
+      updateDisplay,
     } = this.props;
 
     const { newAccount } = this.state;
@@ -26,12 +50,33 @@ class App extends React.Component {
         'IOST Desktop',
       ),
       e(
+        'h2',
+        { key: 'h2-display' },
+        'Display',
+      ),
+      e(
         Select,
         {
-          key: 'select',
+          key: 'select-display',
+          value: displayOptions.find(option => option.value === display),
+          options: displayOptions,
+          onChange: newDisplay => updateDisplay(newDisplay.value),
+          styles: selectStyle,
+        },
+      ),
+      e(
+        'h2',
+        { key: 'h2-account' },
+        'Account',
+      ),
+      e(
+        Select,
+        {
+          key: 'select-account',
           value: { value: selectedAccount, label: selectedAccount },
           options: Object.keys(accounts).map(account => ({ value: account, label: account })),
           onChange: newSelectedAccount => updateSelectedAccount(newSelectedAccount.value),
+          styles: selectStyle,
         },
       ),
       e(

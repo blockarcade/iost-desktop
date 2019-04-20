@@ -10,7 +10,7 @@ const {
   REACT_DEVELOPER_TOOLS,
 } = require('electron-devtools-installer');
 
-const DISPLAYS = { ACCOUNT_BALANCE: 0 };
+const DISPLAYS = { ACCOUNT_BALANCE: 'ACCOUNT_BALANCE', IOST_PRICE: 'IOST_PRICE' };
 const store = new Store({
   defaults: {
     accounts: {},
@@ -20,13 +20,14 @@ const store = new Store({
 });
 
 const NODE_URL = 'http://18.209.137.246:30001';
+const PRICE_FEED_URL = 'https://widgets.coinmarketcap.com/v2/ticker/2405/?ref=widget&convert=usd';
 
 const assetsDirectory = path.join(__dirname, 'assets');
 
 let tray;
 let window;
 
-// Don't show the app in the doc
+// Don't show the app in the dock.
 app.dock.hide();
 
 app.on('ready', () => {
@@ -39,9 +40,11 @@ app.on('window-all-closed', () => {
   app.quit();
 });
 
-let trayTimer = undefined;
+let trayTimer;
 
 const updateTray = () => {
+  clearTimeout(trayTimer);
+
   const display = store.get('display');
   const accounts = store.get('accounts');
   const selectedAccount = store.get('selectedAccount');
@@ -54,16 +57,22 @@ const updateTray = () => {
     } else {
       action = fetch(`${NODE_URL}/getAccount/${selectedAccount}/true`)
         .then(res => res.json())
-        .then(json => {
+        .then((json) => {
           tray.setTitle(`${json.balance.toFixed(2)}`);
         });
     }
+  } else if (display === DISPLAYS.IOST_PRICE) {
+    action = fetch(PRICE_FEED_URL)
+      .then(res => res.json())
+      .then((json) => {
+        tray.setTitle(`${json.data.quotes.USD.price.toFixed(4)}`);
+      });
   }
 
   return action.then(() => {
     trayTimer = setTimeout(updateTray, 60000);
   })
-  .catch((e) => console.log(e) || setTimeout(updateTray, 10000));
+    .catch(e => console.log(e) || setTimeout(updateTray, 10000));
 };
 
 const createTray = () => {
@@ -115,7 +124,9 @@ const createWindow = () => {
       backgroundThrottling: false,
     },
   });
-  window.openDevTools({ mode: 'detach' });
+
+  // TODO: Uncomment to open devtools.
+  // window.openDevTools({ mode: 'detach' });
   window.loadURL(`file://${path.join(__dirname, 'index.html')}`);
 
   // Hide the window when it loses focus
@@ -127,6 +138,7 @@ const createWindow = () => {
 
   window.accounts = store.get('accounts');
   window.selectedAccount = store.get('selectedAccount');
+  window.display = store.get('display');
 };
 
 const toggleWindow = () => {
@@ -153,46 +165,27 @@ ipcMain.on('newAccount', (event, account) => {
 
   // Notify render process of new accounts.
   window.accounts = accounts;
-  event.sender.send('newAccount');
+  event.sender.send('reRender');
 });
 
 ipcMain.on('updateSelectedAccount', (event, account) => {
   store.set('selectedAccount', account);
 
+  // Update Tray label.
+  updateTray();
+
   // Notify render process of new accounts.
   window.selectedAccount = account;
-  event.sender.send('updateSelectedAccount');
+  event.sender.send('reRender');
 });
 
-// ipcMain.on('weather-updated', (event, weather) => {
-//   // Show "feels like" temperature in tray
-//   tray.setTitle(`${Math.round(weather.currently.apparentTemperature)}°`)
+ipcMain.on('updateDisplay', (event, display) => {
+  store.set('display', display);
+  window.display = display;
 
-//   // Show summary and last refresh time as hover tooltip
-//   const time = new Date(weather.currently.time).toLocaleTimeString()
-//   tray.setToolTip(`${weather.currently.summary} at ${time}`)
+  // Update Tray label.
+  updateTray();
 
-//   // Update icon for different weather types
-//   switch (weather.currently.icon) {
-//     case 'cloudy':
-//     case 'fog':
-//     case 'partly-cloudy-day':
-//     case 'partly-cloudy-night':
-//       tray.setImage(path.join(assetsDirectory, 'cloudTemplate.png'))
-//       break
-//     case 'rain':
-//     case 'sleet':
-//     case 'snow':
-//       tray.setImage(path.join(assetsDirectory, 'umbrellaTemplate.png'))
-//       break
-//     case 'clear-night':
-//       tray.setImage(path.join(assetsDirectory, 'moonTemplate.png'))
-//       break
-//     case 'wind':
-//       tray.setImage(path.join(assetsDirectory, 'flagTemplate.png'))
-//       break
-//     case 'clear-day':
-//     default:
-//       tray.setImage(path.join(assetsDirectory, 'sunTemplate.png'))
-//   }
-// })
+  // Update display.
+  event.sender.send('reRender');
+});
