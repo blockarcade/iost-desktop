@@ -19,6 +19,8 @@ const store = new Store({
   },
 });
 
+const NODE_URL = 'http://18.209.137.246:30001';
+
 const assetsDirectory = path.join(__dirname, 'assets');
 
 let tray;
@@ -42,6 +44,7 @@ let trayTimer = undefined;
 const updateTray = () => {
   const display = store.get('display');
   const accounts = store.get('accounts');
+  const selectedAccount = store.get('selectedAccount');
   let action = Promise.resolve();
 
   if (display === DISPLAYS.ACCOUNT_BALANCE) {
@@ -49,13 +52,18 @@ const updateTray = () => {
       // The user needs to add an account.
       tray.setTitle('Click to start!');
     } else {
-      tray.setTitle('19034.79');
+      action = fetch(`${NODE_URL}/getAccount/${selectedAccount}/true`)
+        .then(res => res.json())
+        .then(json => {
+          tray.setTitle(`${json.balance.toFixed(2)}`);
+        });
     }
   }
 
   return action.then(() => {
     trayTimer = setTimeout(updateTray, 60000);
-  });
+  })
+  .catch((e) => console.log(e) || setTimeout(updateTray, 10000));
 };
 
 const createTray = () => {
@@ -117,8 +125,8 @@ const createWindow = () => {
     }
   });
 
-  const accounts = store.get('accounts');
-  window.accounts = accounts;
+  window.accounts = store.get('accounts');
+  window.selectedAccount = store.get('selectedAccount');
 };
 
 const toggleWindow = () => {
@@ -140,6 +148,8 @@ ipcMain.on('newAccount', (event, account) => {
   const accounts = store.get('accounts');
   accounts[account] = account;
   store.set('accounts', accounts);
+
+  updateTray();
 
   // Notify render process of new accounts.
   window.accounts = accounts;

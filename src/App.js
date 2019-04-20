@@ -29,9 +29,9 @@ class App extends React.Component {
         Select,
         {
           key: 'select',
-          value: selectedAccount,
+          value: { value: selectedAccount, label: selectedAccount },
           options: Object.keys(accounts).map(account => ({ value: account, label: account })),
-          onChange: newSelectedAccount => updateSelectedAccount(newSelectedAccount),
+          onChange: newSelectedAccount => updateSelectedAccount(newSelectedAccount.value),
         },
       ),
       e(
