@@ -49,7 +49,7 @@ const updateTray = () => {
       // The user needs to add an account.
       tray.setTitle('Click to start!');
     } else {
-      
+      tray.setTitle('19034.79');
     }
   }
 
