@@ -1,16 +1,16 @@
 const React = require('react');
 const { default: Select } = require('react-select');
+const Tabs = require('./Tabs.js');
 
 const e = React.createElement;
 
 
 const selectStyle = {
-  option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-    return {
-      ...styles,
-      color: 'black',
-    };
-  },
+  option: (styles, {
+    data, isDisabled, isFocused, isSelected,
+  }) => Object.assign(styles, {
+    color: 'black',
+  }),
 };
 
 // TODO Pull these from the backend.
@@ -44,41 +44,56 @@ class App extends React.Component {
     const { newAccount } = this.state;
 
     return [
-      e(
-        'h1',
-        { key: 'h1' },
-        'IOST Desktop',
-      ),
-      e(
-        'h2',
-        { key: 'h2-display' },
-        'Display',
-      ),
-      e(
-        Select,
-        {
-          key: 'select-display',
-          value: displayOptions.find(option => option.value === display),
-          options: displayOptions,
-          onChange: newDisplay => updateDisplay(newDisplay.value),
-          styles: selectStyle,
-        },
-      ),
-      e(
-        'h2',
-        { key: 'h2-account' },
-        'Account',
-      ),
-      e(
-        Select,
-        {
-          key: 'select-account',
-          value: { value: selectedAccount, label: selectedAccount },
-          options: Object.keys(accounts).map(account => ({ value: account, label: account })),
-          onChange: newSelectedAccount => updateSelectedAccount(newSelectedAccount.value),
-          styles: selectStyle,
-        },
-      ),
+      <Tabs
+        key="tabs"
+        PriceComponent={<div>Test</div>}
+        PortfolioComponent={<h1>Coming Soon</h1>}
+        VotesComponent={<h1>Coming Soon</h1>}
+        SettingsComponent={(
+          <div>
+            <h2>Display</h2>
+            <Select
+              value={displayOptions.find(option => option.value === display)}
+              options={displayOptions}
+              onChange={newDisplay => updateDisplay(newDisplay.value)}
+              styles={selectStyle}
+            />
+            <h2>Account</h2>
+            <Select
+              value={{ value: selectedAccount, label: selectedAccount }}
+              options={Object.keys(accounts).map(account => ({ value: account, label: account }))}
+              onChange={newSelectedAccount => updateSelectedAccount(newSelectedAccount.value)}
+              styles={selectStyle}
+            />
+            <form>
+              <p>
+                <input
+                  type="text"
+                  placeholder="New Account Name"
+                  value={newAccount}
+                  onChange={e => this.setState({ newAccount: e.target.value })}
+                />
+              </p>
+              <p>
+                <input
+                  key="add"
+                  type="submit"
+                  value="Add Account"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    addNewAccount(newAccount);
+                    this.setState({ newAccount: '' });
+                  }}
+                />
+              </p>
+            </form>
+          </div>
+)}
+      />,
+
+    ];
+    return [
+      e(Header, { key: 'header' }),
       e(
         'form',
         { key: 'body' },

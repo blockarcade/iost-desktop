@@ -4,11 +4,13 @@ const {
 const path = require('path');
 const Store = require('electron-store');
 const fetch = require('node-fetch');
-
+const { enableLiveReload } = require('electron-compile');
 const {
   default: installExtension,
   REACT_DEVELOPER_TOOLS,
 } = require('electron-devtools-installer');
+
+enableLiveReload();
 
 const DISPLAYS = { ACCOUNT_BALANCE: 'ACCOUNT_BALANCE', IOST_PRICE: 'IOST_PRICE' };
 const store = new Store({
@@ -50,6 +52,8 @@ const updateTray = () => {
   const selectedAccount = store.get('selectedAccount');
   let action = Promise.resolve();
 
+  // TODO: We need to fetch account and price each time.
+
   if (display === DISPLAYS.ACCOUNT_BALANCE) {
     if (Object.keys(accounts).length === 0) {
       // The user needs to add an account.
@@ -66,6 +70,9 @@ const updateTray = () => {
       .then(res => res.json())
       .then((json) => {
         tray.setTitle(`${json.data.quotes.USD.price.toFixed(4)}`);
+        // TODO: Send the render event and update the price.
+        window.price = json.data.quotes.USD.price;
+        window.webContents.send('ping', 'whoooooooh!')
       });
   }
 
@@ -112,7 +119,7 @@ const createWindow = () => {
 
   window = new BrowserWindow({
     width: 300,
-    height: 450,
+    height: 400,
     show: false,
     frame: false,
     fullscreenable: false,
@@ -126,7 +133,7 @@ const createWindow = () => {
   });
 
   // TODO: Uncomment to open devtools.
-  // window.openDevTools({ mode: 'detach' });
+  window.openDevTools({ mode: 'detach' });
   window.loadURL(`file://${path.join(__dirname, 'index.html')}`);
 
   // Hide the window when it loses focus
@@ -160,11 +167,13 @@ ipcMain.on('newAccount', (event, account) => {
   const accounts = store.get('accounts');
   accounts[account] = account;
   store.set('accounts', accounts);
+  store.set('selectedAccount', account);
 
   updateTray();
 
   // Notify render process of new accounts.
   window.accounts = accounts;
+  window.selectedAccount = account;
   event.sender.send('reRender');
 });
 

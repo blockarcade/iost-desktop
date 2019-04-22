@@ -17,7 +17,7 @@
   "author": "Jason Stallings <octalmage@gmail.com>",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "electron": "^4.1.4",
+    "electron-prebuilt-compile": "^4.0.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.17.2",
@@ -27,9 +27,12 @@
   "dependencies": {
     "electron-devtools-installer": "^2.2.4",
     "electron-store": "^3.2.0",
+    "grommet": "^2.6.6",
+    "grommet-icons": "^4.2.0",
     "node-fetch": "^2.3.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-select": "^2.4.3"
+    "react-select": "^2.4.3",
+    "styled-components": "^4.2.0"
   }
 }
