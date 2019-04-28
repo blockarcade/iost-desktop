@@ -71,7 +71,7 @@ const updateTray = () => {
       .then((json) => {
         tray.setTitle(`${Number(json.price).toFixed(4)}`);
         // TODO: Send the render event and update the price.
-        window.price = json.data.quotes.USD.price;
+        window.price = Number(json.price);
         window.webContents.send('reRender');
       });
   }
