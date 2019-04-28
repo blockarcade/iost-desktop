@@ -2,7 +2,7 @@
 
 > Desktop app for IOST users and node operators.
 <p align="center">
-  <img src="./screenshot.png" />
+  <img src="./mock.jpeg" />
 </p>
 
 ## To Use
