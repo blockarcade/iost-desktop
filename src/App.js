@@ -1,5 +1,8 @@
+import Price from './Price.js';
+
 const React = require('react');
 const { default: Select } = require('react-select');
+
 const Tabs = require('./Tabs.js');
 
 const e = React.createElement;
@@ -39,6 +42,7 @@ class App extends React.Component {
       updateSelectedAccount,
       display,
       updateDisplay,
+      price,
     } = this.props;
 
     const { newAccount } = this.state;
@@ -46,7 +50,7 @@ class App extends React.Component {
     return [
       <Tabs
         key="tabs"
-        PriceComponent={<div>Test</div>}
+        PriceComponent={<Price price={price} />}
         PortfolioComponent={<h1>Coming Soon</h1>}
         VotesComponent={<h1>Coming Soon</h1>}
         SettingsComponent={(

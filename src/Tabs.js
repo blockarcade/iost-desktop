@@ -72,7 +72,7 @@ class ControlledTabs extends Component {
               {PriceComponent}
             </Box>
           </Tab>
-          <Tab title="Portfolio">
+          <Tab title="Account">
             <Box margin="small">
               {PortfolioComponent}
             </Box>
