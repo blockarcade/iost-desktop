@@ -4,8 +4,10 @@
   "description": "Desktop app for IOST users and node operators.",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron-forge start",
     "lint": "eslint --fix renderer.js main.js src/*.js",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
     "changelog": "conventional-changelog -p angular CHANGELOG.md -r 1 -o CHANGELOG.md"
   },
   "repository": "https://github.com/octalmage/iost-desktop",
@@ -18,7 +20,11 @@
   "author": "Jason Stallings <octalmage@gmail.com>",
   "license": "AGPL-3.0",
   "devDependencies": {
-    "electron-prebuilt-compile": "^4.0.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "4.0.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.17.2",
@@ -26,7 +32,9 @@
     "eslint-plugin-react": "^7.12.4"
   },
   "dependencies": {
+    "electron-compile": "^6.4.4",
     "electron-devtools-installer": "^2.2.4",
+    "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^3.2.0",
     "grommet": "^2.6.6",
     "grommet-icons": "^4.2.0",
@@ -36,5 +44,37 @@
     "react-select": "^2.4.3",
     "react-sparklines": "^1.7.0",
     "styled-components": "^4.2.0"
+  },
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "packageManager": "yarn"
+      },
+      "electronWinstallerConfig": {
+        "name": "iost_desktop"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "iostdesktop"
+      }
+    }
   }
 }
