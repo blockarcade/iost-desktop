@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "lint": "eslint --fix renderer.js main.js src/*.js"
+    "lint": "eslint --fix renderer.js main.js src/*.js",
+    "changelog": "conventional-changelog -p angular CHANGELOG.md -r 1 -o CHANGELOG.md"
   },
   "repository": "https://github.com/octalmage/iost-desktop",
   "keywords": [
@@ -33,6 +34,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-select": "^2.4.3",
+    "react-sparklines": "^1.7.0",
     "styled-components": "^4.2.0"
   }
 }

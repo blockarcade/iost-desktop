@@ -22,7 +22,7 @@ const store = new Store({
 });
 
 const NODE_URL = 'http://18.209.137.246:30001';
-const PRICE_FEED_URL = 'https://widgets.coinmarketcap.com/v2/ticker/2405/?ref=widget&convert=usd';
+const PRICE_FEED_URL = 'https://api.binance.com/api/v3/avgPrice?symbol=IOSTUSDT';
 
 const assetsDirectory = path.join(__dirname, 'assets');
 
@@ -69,10 +69,10 @@ const updateTray = () => {
     action = fetch(PRICE_FEED_URL)
       .then(res => res.json())
       .then((json) => {
-        tray.setTitle(`${json.data.quotes.USD.price.toFixed(4)}`);
+        tray.setTitle(`${Number(json.price).toFixed(4)}`);
         // TODO: Send the render event and update the price.
-        window.price = json.data.quotes.USD.price;
-        window.webContents.send('ping', 'whoooooooh!')
+        window.price = Number(json.price);
+        window.webContents.send('reRender');
       });
   }
 

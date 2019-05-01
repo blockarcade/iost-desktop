@@ -23,6 +23,7 @@ const render = () => ReactDOM.render(
       accounts: win.accounts,
       selectedAccount: win.selectedAccount,
       display: win.display,
+      price: win.price,
     },
   ),
   domContainer,
