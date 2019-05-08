@@ -1,6 +1,6 @@
 {
   "name": "iost-desktop",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Desktop app for IOST users and node operators.",
   "main": "main.js",
   "scripts": {
