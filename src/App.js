@@ -26,6 +26,10 @@ const displayOptions = [
     value: 'IOST_PRICE',
     label: 'IOST Price',
   },
+  {
+    value: 'TOTAL_NODE_VOTES',
+    label: 'Total Votes for Node',
+  },
 ];
 
 class App extends React.Component {

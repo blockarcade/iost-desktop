@@ -43,6 +43,7 @@
     "react-dom": "^16.8.6",
     "react-select": "^2.4.3",
     "react-sparklines": "^1.7.0",
+    "short-number": "^1.0.7",
     "styled-components": "^4.2.0"
   },
   "config": {

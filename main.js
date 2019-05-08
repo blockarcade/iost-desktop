@@ -5,14 +5,16 @@ const path = require('path');
 const Store = require('electron-store');
 const fetch = require('node-fetch');
 const { enableLiveReload } = require('electron-compile');
-const {
-  default: installExtension,
-  REACT_DEVELOPER_TOOLS,
-} = require('electron-devtools-installer');
+const shortNumber = require('short-number');
+const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 
 enableLiveReload();
 
-const DISPLAYS = { ACCOUNT_BALANCE: 'ACCOUNT_BALANCE', IOST_PRICE: 'IOST_PRICE' };
+const DISPLAYS = {
+  ACCOUNT_BALANCE: 'ACCOUNT_BALANCE',
+  IOST_PRICE: 'IOST_PRICE',
+  TOTAL_NODE_VOTES: 'TOTAL_NODE_VOTES',
+};
 const store = new Store({
   defaults: {
     accounts: {},
@@ -23,7 +25,7 @@ const store = new Store({
 
 const NODE_URL = 'http://18.209.137.246:30001';
 const PRICE_FEED_URL = 'https://api.binance.com/api/v3/avgPrice?symbol=IOSTUSDT';
-
+const TOTAL_NODE_VOTES_URL = 'https://www.iostabc.com/api/voters';
 const assetsDirectory = path.join(__dirname, 'assets');
 
 let tray;
@@ -69,16 +71,24 @@ const updateTray = () => {
     action = fetch(PRICE_FEED_URL)
       .then(res => res.json())
       .then((json) => {
-        tray.setTitle(`${Number(json.price).toFixed(4)}`);
+        tray.setTitle(`$${Number(json.price).toFixed(4)}`);
         // TODO: Send the render event and update the price.
         window.price = Number(json.price);
         window.webContents.send('reRender');
       });
+  } else if (display === DISPLAYS.TOTAL_NODE_VOTES) {
+    action = fetch(`${TOTAL_NODE_VOTES_URL}/${selectedAccount}`)
+      .then(res => res.json())
+      .then((json) => {
+        const total = json.voters.reduce((totalVotes, num) => totalVotes + Number(num.votes), 0);
+        tray.setTitle(`${shortNumber(total)}`);
+      });
   }
 
-  return action.then(() => {
-    trayTimer = setTimeout(updateTray, 60000);
-  })
+  return action
+    .then(() => {
+      trayTimer = setTimeout(updateTray, 60000);
+    })
     .catch(e => console.log(e) || setTimeout(updateTray, 10000));
 };
 
@@ -95,7 +105,6 @@ const createTray = () => {
     }
   });
 
-
   updateTray();
 };
 
@@ -104,7 +113,7 @@ const getWindowPosition = () => {
   const trayBounds = tray.getBounds();
 
   // Center window horizontally below the tray icon
-  const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
+  const x = Math.round(trayBounds.x + trayBounds.width / 2 - windowBounds.width / 2);
 
   // Position window 4 pixels vertically below the tray icon
   const y = Math.round(trayBounds.y + trayBounds.height + 4);
