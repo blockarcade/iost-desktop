@@ -30,7 +30,7 @@ let tray;
 let window;
 
 // Don't show the app in the dock.
-app.dock.hide();
+if (process.platform === 'darwin') app.dock.hide();
 
 app.on('ready', () => {
   createTray();
