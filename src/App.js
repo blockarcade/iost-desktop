@@ -30,6 +30,14 @@ const displayOptions = [
     value: 'TOTAL_NODE_VOTES',
     label: 'Total Votes for Node',
   },
+  {
+    value: 'RAM',
+    label: 'iRAM Available',
+  },
+  {
+    value: 'GAS',
+    label: 'iGAS Available',
+  },
 ];
 
 class App extends React.Component {

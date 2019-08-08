@@ -2,7 +2,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const { ipcRenderer } = require('electron');
 const { remote } = require('electron');
-const App = require('./src/App.js');
+const App = require('./App.js');
 
 const e = React.createElement;
 const win = remote.getCurrentWindow();

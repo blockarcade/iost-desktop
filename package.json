@@ -2,7 +2,7 @@
   "name": "iost-desktop",
   "version": "0.0.2",
   "description": "Desktop app for IOST users and node operators.",
-  "main": "main.js",
+  "main": "./src/main.js",
   "scripts": {
     "start": "electron-forge start",
     "lint": "eslint --fix renderer.js main.js src/*.js",
@@ -20,6 +20,8 @@
   "author": "Jason Stallings <octalmage@gmail.com>",
   "license": "AGPL-3.0",
   "devDependencies": {
+    "@electron-forge/maker-dmg": "^6.0.0-beta.39",
+    "@electron-forge/maker-zip": "^6.0.0-beta.39",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
@@ -47,35 +49,6 @@
     "styled-components": "^4.2.0"
   },
   "config": {
-    "forge": {
-      "make_targets": {
-        "win32": [
-          "squirrel"
-        ],
-        "darwin": [
-          "zip"
-        ],
-        "linux": [
-          "deb",
-          "rpm"
-        ]
-      },
-      "electronPackagerConfig": {
-        "packageManager": "yarn"
-      },
-      "electronWinstallerConfig": {
-        "name": "iost_desktop"
-      },
-      "electronInstallerDebian": {},
-      "electronInstallerRedhat": {},
-      "github_repository": {
-        "owner": "",
-        "name": ""
-      },
-      "windowsStoreConfig": {
-        "packageName": "",
-        "name": "iostdesktop"
-      }
-    }
+    "forge": "./forge.js"
   }
 }

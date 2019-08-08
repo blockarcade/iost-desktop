@@ -14,7 +14,10 @@ const DISPLAYS = {
   ACCOUNT_BALANCE: 'ACCOUNT_BALANCE',
   IOST_PRICE: 'IOST_PRICE',
   TOTAL_NODE_VOTES: 'TOTAL_NODE_VOTES',
+  RAM: 'RAM',
+  GAS: 'GAS',
 };
+
 const store = new Store({
   defaults: {
     accounts: {},
@@ -26,7 +29,7 @@ const store = new Store({
 const NODE_URL = 'http://18.209.137.246:30001';
 const PRICE_FEED_URL = 'https://api.binance.com/api/v3/avgPrice?symbol=IOSTUSDT';
 const TOTAL_NODE_VOTES_URL = 'https://www.iostabc.com/api/voters';
-const assetsDirectory = path.join(__dirname, 'assets');
+const assetsDirectory = path.join(__dirname, '..', 'assets');
 
 let tray;
 let window;
@@ -65,6 +68,28 @@ const updateTray = () => {
         .then(res => res.json())
         .then((json) => {
           tray.setTitle(`${json.balance.toFixed(2)}`);
+        });
+    }
+  } else if (display === DISPLAYS.RAM) {
+    if (Object.keys(accounts).length === 0) {
+      // The user needs to add an account.
+      tray.setTitle('Click to start!');
+    } else {
+      action = fetch(`${NODE_URL}/getAccount/${selectedAccount}/true`)
+        .then(res => res.json())
+        .then((json) => {
+          tray.setTitle(`${(Number(json.ram_info.available) / 1024).toFixed(2)}KB`);
+        });
+    }
+  } else if (display === DISPLAYS.GAS) {
+    if (Object.keys(accounts).length === 0) {
+      // The user needs to add an account.
+      tray.setTitle('Click to start!');
+    } else {
+      action = fetch(`${NODE_URL}/getAccount/${selectedAccount}/true`)
+        .then(res => res.json())
+        .then((json) => {
+          tray.setTitle(`${shortNumber(Number(json.gas_info.current_total).toFixed(0))} iGAS`);
         });
     }
   } else if (display === DISPLAYS.IOST_PRICE) {
