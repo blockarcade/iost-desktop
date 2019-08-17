@@ -1,8 +1,10 @@
 // Electron forge configuration for building the app
 module.exports = {
   packagerConfig: {
-    icon: './assets/icon.icns',
+    icon: './icon.icns',
     name: 'IOST Desktop',
+    osxSign: true,
+    appBundleId: 'com.octalmage.iostdesktop',
   },
   makers: [
     {
@@ -10,14 +12,6 @@ module.exports = {
       platforms: [
         'darwin',
       ],
-    },
-    {
-      name: '@electron-forge/maker-deb',
-      config: {},
-    },
-    {
-      name: '@electron-forge/maker-rpm',
-      config: {},
     },
     {
       name: '@electron-forge/maker-dmg',
