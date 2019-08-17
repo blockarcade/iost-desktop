@@ -1,3 +1,4 @@
+/* eslint react/jsx-filename-extension: 0 */
 import Price from './Price.js';
 
 const React = require('react');
@@ -34,10 +35,10 @@ const displayOptions = [
     value: 'RAM',
     label: 'iRAM Available',
   },
-  {
-    value: 'GAS',
-    label: 'iGAS Available',
-  },
+  // {
+  //   value: 'GAS',
+  //   label: 'iGAS Available',
+  // },
 ];
 
 class App extends React.Component {
@@ -55,6 +56,7 @@ class App extends React.Component {
       display,
       updateDisplay,
       price,
+      quit,
     } = this.props;
 
     const { newAccount } = this.state;
@@ -103,39 +105,18 @@ class App extends React.Component {
                 />
               </p>
             </form>
+            <input
+              key="exit"
+              type="button"
+              value="Quit Application"
+              onClick={(e) => {
+                e.preventDefault();
+                quit();
+              }}
+            />
           </div>
 )}
       />,
-
-    ];
-    return [
-      e(Header, { key: 'header' }),
-      e(
-        'form',
-        { key: 'body' },
-        [
-          e(
-            'p',
-            { key: 'accountname' },
-            e('input', {
-              type: 'text',
-              placeholder: 'New Account Name',
-              value: newAccount,
-              onChange: e => this.setState({ newAccount: e.target.value }),
-            }),
-          ),
-          e('input', {
-            key: 'add',
-            type: 'submit',
-            value: 'Add Account',
-            onClick: (e) => {
-              e.preventDefault();
-              addNewAccount(newAccount);
-              this.setState({ newAccount: '' });
-            },
-          }),
-        ],
-      ),
     ];
   }
 }

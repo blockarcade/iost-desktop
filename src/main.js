@@ -15,7 +15,7 @@ const DISPLAYS = {
   IOST_PRICE: 'IOST_PRICE',
   TOTAL_NODE_VOTES: 'TOTAL_NODE_VOTES',
   RAM: 'RAM',
-  GAS: 'GAS',
+  // GAS: 'GAS',
 };
 
 const store = new Store({
@@ -147,9 +147,10 @@ const getWindowPosition = () => {
 };
 
 const createWindow = () => {
-  installExtension(REACT_DEVELOPER_TOOLS)
-    .then(name => console.log(`Added Extension:  ${name}`))
-    .catch(err => console.log('An error occurred: ', err));
+  // Uncomment to install devtools.
+  // installExtension(REACT_DEVELOPER_TOOLS)
+  //   .then(name => console.log(`Added Extension:  ${name}`))
+  //   .catch(err => console.log('An error occurred: ', err));
 
   window = new BrowserWindow({
     width: 300,
@@ -167,7 +168,7 @@ const createWindow = () => {
   });
 
   // TODO: Uncomment to open devtools.
-  window.openDevTools({ mode: 'detach' });
+  // window.openDevTools({ mode: 'detach' });
   window.loadURL(`file://${path.join(__dirname, 'index.html')}`);
 
   // Hide the window when it loses focus
@@ -196,6 +197,10 @@ const showWindow = () => {
   window.show();
   window.focus();
 };
+
+ipcMain.on('quit', () => {
+  app.quit();
+});
 
 ipcMain.on('newAccount', (event, account) => {
   const accounts = store.get('accounts');
